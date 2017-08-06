@@ -11,7 +11,9 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.support.annotation.Nullable;
+import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 
@@ -24,7 +26,7 @@ public class Practice13CameraRotateHittingFaceView extends View {
     Camera camera = new Camera();
     Matrix matrix = new Matrix();
     int degree;
-    ObjectAnimator animator = ObjectAnimator.ofInt(this, "degree", 0, 360);
+    ObjectAnimator animator = ObjectAnimator.ofFloat(this, "rotationX", 0, 360);
 
     public Practice13CameraRotateHittingFaceView(Context context) {
         super(context);
@@ -45,8 +47,11 @@ public class Practice13CameraRotateHittingFaceView extends View {
         bitmap = scaledBitmap;
 
         animator.setDuration(5000);
-        animator.setInterpolator(new LinearInterpolator());
+        animator.setInterpolator(new LinearOutSlowInInterpolator());
         animator.setRepeatCount(ValueAnimator.INFINITE);
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        float newZ = - displayMetrics.density * 4;
+        camera.setLocation(0, 0, newZ);
     }
 
     @Override

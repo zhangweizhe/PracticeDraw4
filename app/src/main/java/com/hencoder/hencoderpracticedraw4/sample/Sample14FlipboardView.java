@@ -10,6 +10,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 
@@ -19,6 +20,7 @@ public class Sample14FlipboardView extends View {
     Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
     Bitmap bitmap;
     Camera camera = new Camera();
+    final String TAG = getClass().getSimpleName();
     int degree;
     ObjectAnimator animator = ObjectAnimator.ofInt(this, "degree", 0, 180);
 
@@ -81,10 +83,12 @@ public class Sample14FlipboardView extends View {
         // 第二遍绘制：下半部分
         canvas.save();
 
+
         if (degree < 90) {
             canvas.clipRect(0, centerY, getWidth(), getHeight());
         } else {
             canvas.clipRect(0, 0, getWidth(), centerY);
+            //canvas.clipRect(0, centerY, getWidth(), getHeight());
         }
         camera.save();
         camera.rotateX(degree);

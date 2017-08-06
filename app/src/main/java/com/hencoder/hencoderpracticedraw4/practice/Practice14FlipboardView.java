@@ -10,6 +10,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 
@@ -20,7 +21,9 @@ public class Practice14FlipboardView extends View {
     Bitmap bitmap;
     Camera camera = new Camera();
     int degree;
-    ObjectAnimator animator = ObjectAnimator.ofInt(this, "degree", 0, 180);
+    float rotationY;
+    ObjectAnimator animator = ObjectAnimator.ofFloat(this, "rotationY", 0, 180);
+    final String TAG = getClass().getSimpleName();
 
     public Practice14FlipboardView(Context context) {
         super(context);
@@ -61,10 +64,15 @@ public class Practice14FlipboardView extends View {
         invalidate();
     }
 
+    public void setRotationY(float rotationY){
+        this.rotationY = rotationY;
+        invalidate();
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
+        Log.i(TAG, "onDraw: degree = " + degree + ", rotationX = " + rotationY);
         int bitmapWidth = bitmap.getWidth();
         int bitmapHeight = bitmap.getHeight();
         int centerX = getWidth() / 2;
@@ -72,10 +80,23 @@ public class Practice14FlipboardView extends View {
         int x = centerX - bitmapWidth / 2;
         int y = centerY - bitmapHeight / 2;
 
+        //绘制左半部分
         canvas.save();
+        canvas.clipRect(0,0,centerX, getHeight());
+        canvas.drawBitmap(bitmap,x,y,paint);
+        canvas.restore();
+
+        //绘制右半部分
+        canvas.save();
+        if (rotationY < 90) {
+            canvas.clipRect(centerX, 0, getWidth(), getHeight());
+        } else {
+            canvas.clipRect(0, 0, centerX, getHeight());
+            //canvas.clipRect(0, centerY, getWidth(), getHeight());
+        }
 
         camera.save();
-        camera.rotateX(degree);
+        camera.rotateY(rotationY);
         canvas.translate(centerX, centerY);
         camera.applyToCanvas(canvas);
         canvas.translate(-centerX, -centerY);
